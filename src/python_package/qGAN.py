@@ -2,7 +2,18 @@ import torch.nn as nn
 import pennylane as qml
 import torch
 import numpy as np
+from torch.utils.data import Dataset
 
+class Dataset(Dataset):
+    def __init__(self, probs):
+        self.data = torch.tensor(probs, dtype=torch.float32) 
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        return self.data[idx]
+    
 
 class Discriminator(nn.Module):
     """Fully connected classical discriminator"""
@@ -128,23 +139,30 @@ class QuantumGenerator(nn.Module):
 
                 qml.Barrier(wires=list(range(self.n_qubits)), only_visual=True)
 
-            return qml.probs(wires=list(range(self.n_qubits)))
+            return qml.sample(wires=list(range(self.n_qubits)))
+        
+        bin_samples = quantum_circuit()
+        samples = [self.binary_to_decimal(row) for row in bin_samples]
     
-        return quantum_circuit
+        return np.array(samples)
     
 
     def filtered_distribution(self, shots: int, excluded_states: list[int]):
 
-        generated_dist = self.trained_circuit(shots=shots)()
-        # Filter out the unwanted states by setting their probabilities to zero
-        filtered_probs = np.copy(generated_dist)
-        for state in excluded_states:
-            filtered_probs[state] = 0
+        generated_samples = self.trained_circuit(shots=2*shots)
 
-        # Normalize the probabilities to ensure they sum to 1
-        total_prob = np.sum(filtered_probs)
-        normalized_probs = filtered_probs / total_prob
+        # Filter out the unwanted states
+        filtered_samples = generated_samples[~np.isin(generated_samples, excluded_states)]
+        
+        if len(filtered_samples) >= shots:
+            sampled_array = np.random.choice(filtered_samples, size=shots, replace=False)
+        else:
+            print("There is not enough samples after filtering")
 
-        return normalized_probs
+        return sampled_array
+    
+    @staticmethod
+    def binary_to_decimal(binary: np.array) -> int:
+        return int("".join(str(x) for x in binary), 2)
 
 
