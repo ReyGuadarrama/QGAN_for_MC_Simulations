@@ -5,12 +5,12 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/GSoC-logo-horizontal.svg/800px-GSoC-logo-horizontal.svg.png?20190922122222" />
 
-**Google Summer of Code 2024.**
+Google Summer of Code 2024.
 ---
 
 <div align="justify">
 
-## Introduction
+## **Introduction**
 ---
 Monte Carlo simulations rely on accurate probability distributions to generate meaningful results, but selecting incorrect distributions can lead to
 inaccuracies and require extensive computational resources. QGANs use variational quantum circuits to learn implicit probability distributions from 
@@ -21,6 +21,25 @@ architectures for optimal performance, and benchmarking against standard Monte C
 use the implemented architectures to generate quark-versus-gluon-initiated jets events from the dataset constructed by 
 [Andrews et.al.](https://doi.org/10.1016/j.nima.2020.164304) [1]
 
+## **Setup**
+---
+
+#### **Prerequisites**
+To download and run this code, the following software is required:
+* Git
+* pip
+* python3
+
+#### **Installation**
+
+```
+git clone git@github.com:ReyGuadarrama/QGAN_for_MC_Simulations.git
+cd QGAN_for_MC_Simulations
+python3 -m venv env
+source env/bin/activate
+pip install -r docs/requierements.txt
+
+```
 
 ## References
 [1] Andrews, M., Alison, J., An, S., Bryant, P., Burkle, B., Gleyzer, S., Narain, M., Paulini, M., Poczos, B. & Usai, E. (2019). End-to-End Jet Classification 
