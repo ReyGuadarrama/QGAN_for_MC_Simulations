@@ -24,13 +24,13 @@ use the implemented architectures to generate quark-versus-gluon-initiated jets 
 ## **Setup**
 ---
 
-#### **Prerequisites**
+### **Prerequisites**
 To download and run this code, the following software is required:
 * Git
 * pip
 * python3
 
-#### **Installation**
+### **Installation**
 
 ```
 git clone git@github.com:ReyGuadarrama/QGAN_for_MC_Simulations.git
