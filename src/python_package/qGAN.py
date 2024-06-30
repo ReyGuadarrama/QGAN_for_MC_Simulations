@@ -1,8 +1,114 @@
+from __future__ import annotations
+
 import torch.nn as nn
 import pennylane as qml
 import torch
 import numpy as np
-from torch.utils.data import Dataset
+import matplotlib.pyplot as plt
+
+from torch.utils.data import Dataset, DataLoader
+from torch.optim import Optimizer
+from torch.nn import Module
+from IPython.display import clear_output
+
+
+
+def plot_training_progress(epoch, iterations, metric_1, metric_2, generator, real_data):
+    # we don't plot if we don't have enough data
+    if len(metric_1) < 2:
+        return
+
+    clear_output(wait=True)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(25, 8))
+
+    # Metric 1
+    ax1.set_title("metric 1", fontsize=15)
+    ax1.plot(iterations, metric_1, color="royalblue", linewidth=3)
+    ax1.set_xlabel("Epoch")
+    ax1.grid()
+
+    # Metric 2
+    ax2.set_title("metric 2", fontsize=15)
+    ax2.plot(iterations, metric_2, color="cornflowerblue", linewidth=3)
+    ax2.set_xlabel("Epoch")
+    ax2.grid()
+
+    # Generated distribution
+    gen = generator().detach().numpy()
+    x = list(range(16))
+    ax3.bar(x, gen[0], color="cornflowerblue", label="generated distribution")
+    ax3.bar(x, real_data.numpy().reshape(16,), color="plum", alpha=0.7, label="real distribution")
+    ax3.legend()
+    ax3.set_title('Probability Distribution', fontsize=15)
+    ax3.set_xlabel('number of heads')
+
+    plt.suptitle(f"Epoch {epoch}", fontsize=25)
+    plt.show()
+
+
+def model_training(discriminator: Discriminator, generator: QuantumGenerator, probability_distribution: np.array, 
+                   device: torch.device, criterion: Module, disc_optimizer: Optimizer, gen_optimizer: Optimizer, metrics: list, epochs: int) -> None:
+
+    gen_loss = []
+    disc_loss = []
+    metric_1 = []
+    metric_2 = []
+    iterations = []
+
+    real_labels = torch.full((1,), 1.0, dtype=torch.float, device=device)
+    fake_labels = torch.full((1,), 0.0, dtype=torch.float, device=device)
+
+    dataset = Dataset(probability_distribution)
+    dataloader = DataLoader(dataset, batch_size=1)
+
+    for epoch in range(epochs):
+        for i, data in enumerate(dataloader):
+
+            # Data for training the discriminator
+            real_data = data.to(device)
+            fake_data = generator()
+
+            # Calculate Frenchet Distance
+            wd = metrics[0](real_data.numpy().reshape(16,),fake_data.detach().numpy().reshape(16,))
+            fd = metrics[1](real_data.numpy().reshape(16,),fake_data.detach().numpy().reshape(16,))
+
+            # Training the discriminator
+            discriminator.zero_grad()
+            outD_real = discriminator(real_data).view(-1)
+            outD_fake = discriminator(fake_data.detach()).view(-1)
+
+            errD_real = criterion(outD_real, real_labels)
+            errD_fake = criterion(outD_fake, fake_labels)
+            # Propagate gradients
+            errD_real.backward()
+            errD_fake.backward()
+
+            errD = errD_real + errD_fake
+            
+
+            disc_optimizer.step()
+            
+
+            # Training the generator
+            generator.zero_grad()
+            outD_fake = discriminator(fake_data).view(-1)
+            errG = criterion(outD_fake, real_labels)
+            
+
+            errG.backward()
+            gen_optimizer.step()
+
+        # Show loss values
+        if epoch % 5 == 0:
+            #print(f'Iteration: {counter}, Discriminator Loss: {errD:0.3f}, Generator Loss: {errG:0.3f}, Frenchet Distance: {fd:0.6f}')
+            gen_loss.append(errG.detach())
+            disc_loss.append(errD.detach())
+            metric_1.append(wd)
+            metric_2.append(fd)
+            iterations.append(epoch)
+            plot_training_progress(epoch, iterations, metric_1, metric_2, generator, real_data)
+
+
 
 class Dataset(Dataset):
     def __init__(self, probs):
@@ -51,7 +157,6 @@ class QuantumAnsatz:
         self.n_qubits = n_qubits
         self.q_depth = q_depth
         self.dev = qml.device("default.qubit", wires=n_qubits)
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
     def circuit(self):
@@ -75,13 +180,18 @@ class QuantumAnsatz:
                 for y in range(self.n_qubits - 1):
                     qml.CZ(wires=[y, y + 1])
 
-                #qml.CZ(wires=[5, 0])
-
                 qml.Barrier(wires=list(range(self.n_qubits)), only_visual=True)
 
             return qml.probs(wires=list(range(self.n_qubits)))
 
         return quantum_circuit
+    
+    def plot_circuit(self):
+        weights = torch.rand(1, self.n_qubits*self.q_depth) 
+        qml.draw_mpl(self.circuit())(weights=weights)
+        plt.show()
+    
+
     
     
 class QuantumGenerator(nn.Module):
