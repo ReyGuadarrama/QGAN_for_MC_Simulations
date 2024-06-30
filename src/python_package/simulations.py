@@ -136,15 +136,18 @@ class MonteCarlo:
     def probability_distribution_2D(samples: np.array, batch_size: int, bins: int, limits: tuple[int, int]) -> np.array:
         x_bins = np.linspace(limits[0], limits[1], bins + 1)
         y_bins = np.linspace(limits[0], limits[1], bins + 1)
-        prob_map = []
+        t_samples = samples.T
+        n_batches = int(np.size(t_samples, axis=1)/batch_size)
+        counts_map = []
 
-        samples = samples.T
-        for i in range(int(np.size(samples, axis=1)/batch_size)):
-            data = samples[:,i*batch_size:(i+1)*batch_size]
+        for i in range(n_batches):
+            data = t_samples[:,i*batch_size:(i+1)*batch_size]
             map, _ , _ = np.histogram2d(data[0], data[1], bins=(x_bins, y_bins))
-            prob_map.append(map)
+            counts_map.append(map)
+        
+        prob_map = np.array(counts_map)/batch_size
 
-        return np.array(prob_map).reshape(bins, bins)/batch_size
+        return prob_map
     
     
     @staticmethod
@@ -157,11 +160,10 @@ class MonteCarlo:
 
 
     @staticmethod
-    def visualize_distribution_2D(samples: np.array, limits: tuple, bins: int, xlabel:str = "X", ylabel:str = "Y", batch_size: int = None) -> None:
-        if batch_size == None:
-            batch_size = np.size(samples, axis=0)
+    def visualize_distribution_2D(samples: np.array, limits: tuple, bins: int, xlabel:str = "X", ylabel:str = "Y") -> None:
 
-        probs = MonteCarlo.probability_distribution_2D(samples, batch_size, bins, limits)
+        batch_size = np.size(samples, axis=0)
+        probs = MonteCarlo.probability_distribution_2D(samples, batch_size, bins, limits)[0]
         plt.figure(figsize=(8, 6))
         plt.imshow(probs, extent=[limits[0], limits[1], limits[0], limits[1]], origin='lower', cmap='inferno', aspect='auto')
         plt.colorbar(label='Density')
