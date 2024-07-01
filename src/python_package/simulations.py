@@ -160,12 +160,12 @@ class MonteCarlo:
 
 
     @staticmethod
-    def visualize_distribution_2D(samples: np.array, limits: tuple, bins: int, xlabel:str = "X", ylabel:str = "Y") -> None:
+    def visualize_distribution_2D(samples: np.array, limits: tuple, bins: int, xlabel:str = "X", ylabel:str = "Y", vmin:float = 0, vmax:float = 0.5) -> None:
 
         batch_size = np.size(samples, axis=0)
         probs = MonteCarlo.probability_distribution_2D(samples, batch_size, bins, limits)[0]
         plt.figure(figsize=(8, 6))
-        plt.imshow(probs, extent=[limits[0], limits[1], limits[0], limits[1]], origin='lower', cmap='inferno', aspect='auto')
+        plt.imshow(probs, extent=[limits[0], limits[1], limits[0], limits[1]], origin='lower', cmap='inferno', aspect='auto', vmin=vmin, vmax=vmax)
         plt.colorbar(label='Density')
         plt.title('Probability Distribution')
         plt.xlabel(xlabel)
