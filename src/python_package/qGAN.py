@@ -13,40 +13,51 @@ from IPython.display import clear_output
 
 
 
-def plot_training_progress(epoch, iterations, metric_1, metric_2, generator, real_data):
+def plot_training_progress(epoch, iterations, metric_1, metric_2, generator, real_data, dist_shape: tuple[int, int]):
     # we don't plot if we don't have enough data
     if len(metric_1) < 2:
         return
 
     clear_output(wait=True)
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(25, 8))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(25, 6))
 
     # Metric 1
     ax1.set_title("metric 1", fontsize=15)
     ax1.plot(iterations, metric_1, color="royalblue", linewidth=3)
     ax1.set_xlabel("Epoch")
+    ax1.set_yscale("log")
     ax1.grid()
 
     # Metric 2
     ax2.set_title("metric 2", fontsize=15)
     ax2.plot(iterations, metric_2, color="cornflowerblue", linewidth=3)
     ax2.set_xlabel("Epoch")
+    ax2.set_yscale("log")
     ax2.grid()
 
     # Generated distribution
-    gen = generator().detach().numpy()
-    x = list(range(16))
-    ax3.bar(x, gen[0], color="cornflowerblue", label="generated distribution")
-    ax3.bar(x, real_data.numpy().reshape(16,), color="plum", alpha=0.7, label="real distribution")
-    ax3.legend()
-    ax3.set_title('Probability Distribution', fontsize=15)
-    ax3.set_xlabel('number of heads')
+    if 1 in dist_shape:
+        gen = generator().detach().numpy()
+        x = list(range(16))
+        ax3.bar(x, gen[0], color="cornflowerblue", label="generated distribution")
+        ax3.bar(x, real_data.numpy().reshape(*dist_shape), color="plum", alpha=0.7, label="real distribution")
+        ax3.legend()
+        ax3.set_title('Probability Distribution', fontsize=15)
+        ax3.set_xlabel('number of heads')
+    else:
+        gen = generator().detach().numpy().reshape(*dist_shape)
+        im = ax3.imshow(gen, extent=[-4, 4, -4, 4], origin='lower', cmap='inferno', aspect='auto', vmin=0, vmax=0.1)
+        ax3.set_title('Probability Distribution', fontsize=15)
+        ax3.set_xlabel('X')
+        ax3.set_ylabel('Y')
+
+        fig.colorbar(im, ax=ax3)
 
     plt.suptitle(f"Epoch {epoch}", fontsize=25)
     plt.show()
 
 
-def model_training(discriminator: Discriminator, generator: QuantumGenerator, probability_distribution: np.array, 
+def model_training(discriminator: Discriminator, generator: QuantumGenerator, probability_distribution: np.array, dist_shape: tuple[int, int],
                    device: torch.device, criterion: Module, disc_optimizer: Optimizer, gen_optimizer: Optimizer, metrics: list, epochs: int) -> None:
 
     gen_loss = []
@@ -69,8 +80,8 @@ def model_training(discriminator: Discriminator, generator: QuantumGenerator, pr
             fake_data = generator()
 
             # Calculate Frenchet Distance
-            wd = metrics[0](real_data.numpy().reshape(16,),fake_data.detach().numpy().reshape(16,))
-            fd = metrics[1](real_data.numpy().reshape(16,),fake_data.detach().numpy().reshape(16,))
+            wd = metrics[0](real_data.numpy().reshape(*dist_shape),fake_data.detach().numpy().reshape(*dist_shape))
+            fd = metrics[1](real_data.numpy().reshape(*dist_shape),fake_data.detach().numpy().reshape(*dist_shape))
 
             # Training the discriminator
             discriminator.zero_grad()
@@ -99,14 +110,14 @@ def model_training(discriminator: Discriminator, generator: QuantumGenerator, pr
             gen_optimizer.step()
 
         # Show loss values
-        if epoch % 5 == 0:
+        if epoch % 20 == 0:
             #print(f'Iteration: {counter}, Discriminator Loss: {errD:0.3f}, Generator Loss: {errG:0.3f}, Frenchet Distance: {fd:0.6f}')
             gen_loss.append(errG.detach())
             disc_loss.append(errD.detach())
             metric_1.append(wd)
             metric_2.append(fd)
             iterations.append(epoch)
-            plot_training_progress(epoch, iterations, metric_1, metric_2, generator, real_data)
+            plot_training_progress(epoch, iterations, metric_1, metric_2, generator, real_data, dist_shape)
 
 
 
@@ -257,7 +268,7 @@ class QuantumGenerator(nn.Module):
         return np.array(samples)
     
 
-    def filtered_distribution(self, shots: int, excluded_states: list[int]):
+    def filtered_distribution(self, shots: int, excluded_states: list[int] = []):
 
         generated_samples = self.trained_circuit(shots=2*shots)
 
