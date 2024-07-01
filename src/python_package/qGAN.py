@@ -36,9 +36,9 @@ def plot_training_progress(epoch, iterations, metric_1, metric_2, generator, rea
     ax2.grid()
 
     # Generated distribution
-    if 1 in dist_shape:
+    if len(dist_shape) == 1:
         gen = generator().detach().numpy()
-        x = list(range(16))
+        x = list(range(dist_shape[0]))
         ax3.bar(x, gen[0], color="cornflowerblue", label="generated distribution")
         ax3.bar(x, real_data.numpy().reshape(*dist_shape), color="plum", alpha=0.7, label="real distribution")
         ax3.legend()
@@ -208,7 +208,7 @@ class QuantumAnsatz:
 class QuantumGenerator(nn.Module):
     """Quantum generator class for the patch method"""
 
-    def __init__(self, n_qubits, q_depth, quantum_circuit):
+    def __init__(self, total_qubits, auxiliar_qubits, circuit_depth, quantum_circuit, partial_measure=False, states_range=(0, )):
         """
         Args:
             n_generators (int): Number of sub-generators to be used in the patch method.
@@ -217,19 +217,40 @@ class QuantumGenerator(nn.Module):
 
         super().__init__()
 
-        self.n_qubits = n_qubits
-        self.q_depth = q_depth
+        self.n_qubits = total_qubits
+        self.q_depth = circuit_depth
+        self.a_qubits = auxiliar_qubits
         self.q_params = nn.ParameterList(
             [
-                nn.Parameter(torch.rand(q_depth * n_qubits), requires_grad=True)
+                nn.Parameter(torch.rand(circuit_depth * total_qubits), requires_grad=True)
             ]
         )
 
         self.ansatz = quantum_circuit
+        self.partial_measure = partial_measure
+
+        if len(states_range) == 1:
+            self.states_range = (0, 2 ** (self.n_qubits - self.a_qubits))
+        else:
+            self.states_range = states_range
+
+
+    def part_measure(self):
+        # Non-linear Transform
+        probs = self.ansatz(self.q_params[0]).float().unsqueeze(0)[0]
+        probsgiven0 = probs[self.states_range[0]: self.states_range[1]]
+        probsgiven0 /= torch.sum(probsgiven0)
+
+        # Post-Processing
+        # probsgiven = probsgiven0 / torch.max(probsgiven0)
+        return probsgiven0.reshape(1, len(probsgiven0))
 
     def forward(self):
-
-        qc_out = self.ansatz(self.q_params[0]).float().unsqueeze(0)
+        
+        if self.partial_measure:
+            qc_out = self.part_measure()
+        else:
+            qc_out = self.ansatz(self.q_params[0]).float().unsqueeze(0)
         
         return qc_out
     
@@ -269,18 +290,36 @@ class QuantumGenerator(nn.Module):
     
 
     def filtered_distribution(self, shots: int, excluded_states: list[int] = []):
+        
+        if self.partial_measure:
+            states = 2 ** self.n_qubits
+            excluded_states = list(set(range(states)) - set(range(self.states_range[0], self.states_range[1])))
 
         generated_samples = self.trained_circuit(shots=2*shots)
 
         # Filter out the unwanted states
-        filtered_samples = generated_samples[~np.isin(generated_samples, excluded_states)]
+        samples = generated_samples[~np.isin(generated_samples, excluded_states)]
+        #print(filtered_samples, filtered_samples.shape)
+        s = 0
+        factor = 2
+
+        while s < shots:
+            generated_samples = self.trained_circuit(shots=factor*shots)
+            filtered_samples = generated_samples[~np.isin(generated_samples, excluded_states)]
+
+            # Filter out the unwanted states
+            samples = np.concatenate((samples, filtered_samples), axis=None)
+            s += np.size(filtered_samples)
+
+            factor += 1
+
         
-        if len(filtered_samples) >= shots:
-            sampled_array = np.random.choice(filtered_samples, size=shots, replace=False)
+        if len(samples) >= shots:
+            sampled_array = np.random.choice(samples, size=shots, replace=False)
+            return sampled_array
         else:
             print("There is not enough samples after filtering")
 
-        return sampled_array
     
     @staticmethod
     def binary_to_decimal(binary: np.array) -> int:
