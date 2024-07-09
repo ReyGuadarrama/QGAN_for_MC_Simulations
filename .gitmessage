@@ -1,0 +1,15 @@
+test:
+result:
+
+interpolation = ,
+shift = ,
+batchsize = ,
+number of qubits = ,
+number of auxiliar qubits = , 
+generator depth = ,
+number of generators = ,
+epochs = ,
+generator lr = ,
+discriminator lr = ,
+
+
