@@ -1,0 +1,20 @@
+{
+    "id": "04",
+    "qubits": 7,
+    "auxiliar qubits": 2,
+    "circuit depth": 10,
+    "generators": 2,
+    "rotations": [
+        "Y"
+    ],
+    "lr gen": 0.5,
+    "lr disc": 0.01,
+    "batch size": 1,
+    "samples": 1024,
+    "epochs": 20,
+    "y": 0.3,
+    "FID": "5.16e-04",
+    "RMSE": "1.07e-02",
+    "disc loss": "1.39e+00",
+    "gen loss": "6.94e-01"
+}

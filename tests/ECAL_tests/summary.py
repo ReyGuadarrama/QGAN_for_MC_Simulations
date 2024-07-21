@@ -12,13 +12,6 @@ def read_json_files(directory):
                 results.append(data)
     return results
 
-def format_scientific(value, key):
-    # Define which keys should be formatted in scientific notation
-    scientific_keys = {'FID', 'RMSE', 'disc_loss', 'gen_loss'}
-    if key in scientific_keys:
-        return f"{value:.3e}"  # Format as scientific notation with 3 decimal places
-    return value
-
 def generate_markdown_table(data):
     # Table headers
     headers = data[0].keys()
@@ -27,7 +20,7 @@ def generate_markdown_table(data):
 
     # Add data rows
     for entry in data:
-        row = "| " + " | ".join(str(format_scientific(value, key)) for key, value in entry.items()) + " |"
+        row = "| " + " | ".join(str(value) for key, value in entry.items()) + " |"
         markdown += row + "\n"
 
     return markdown
