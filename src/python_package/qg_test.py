@@ -8,7 +8,8 @@ import os
 class ModelTest:
     def __init__(self, test_id, num_qubits, num_aux_qubits, circuit_depth, 
                  rotations, num_generators, generator_lr, discriminator_lr, 
-                 batch_size, num_samples, num_epochs, y, channel) -> None:
+                 batch_size, num_samples, num_epochs, y, channel, optimizer, 
+                 resolution) -> None:
         
         self.test_id = test_id
         self.num_qubits = num_qubits
@@ -20,9 +21,11 @@ class ModelTest:
         self.discriminator_lr = discriminator_lr
         self.batch_size = batch_size
         self.num_samples = num_samples
+        self.resolution = resolution
         self.num_epochs = num_epochs
         self.y = y
         self.channel = channel
+        self.optimizer = optimizer
         self.date = date.today()
 
         # Setting the path relative to the current file
@@ -33,6 +36,22 @@ class ModelTest:
         # Check for existing test ID
         self._check_existing_test_id()
         self._check_identical_test()
+
+        # Create Specs JSON
+        self._create_specs_json()
+
+    def _create_specs_json(self) -> None:
+        # Data to save
+        data = self._get_specs_dictionary()
+
+        # file name
+        filename = self.path + f"/{self.test_id}_specs.json"
+
+        # save data in a JSON file
+        with open(filename, 'w') as file:
+            json.dump(data, file, indent=4)
+        
+        print(f"Data saved in {filename}")
 
 
     def _check_existing_test_id(self) -> None:
@@ -71,6 +90,8 @@ class ModelTest:
             "lr gen": self.generator_lr,
             "lr disc": self.discriminator_lr,
             "batch size": self.batch_size,
+            "resolution": self.resolution,
+            "optimizer": self.optimizer,
             "samples": self.num_samples,
             "epochs": self.num_epochs,
             "y": self.y      
@@ -96,7 +117,7 @@ class ModelTest:
 ### **Training dataset features**
 | Parameter            | Value  |
 |----------------------|--------|
-| Resolution     | 8x8       |
+| Resolution     | {self.resolution}   |
 | Interpolation  | Sumpool   |
 | Channel        | {self.channel}      |
 | Transformation | None      |
@@ -119,6 +140,7 @@ class ModelTest:
 | Batch Size           | {self.batch_size}     |
 | Number of Samples    | {self.num_samples}   |
 | Number of epochs     | {self.num_epochs} |
+| Optimizer            | {self.optimizer}  |
 
 ## Hardware and Software
 - **Hardware used**: CPU AMD Ryzen 5 5600G
@@ -128,13 +150,14 @@ class ModelTest:
         display(Markdown(markdown_content))
         
    
-    def save_specs_to_json(self, metrics:dict[str:float]) -> None:
+    def save_results_to_json(self, metrics:dict[str:float]) -> None:
         # Data to save
         data = self._get_specs_dictionary()
         data["FID"] = metrics["FID"]
         data["RMSE"] = metrics["RMSE"]
         data["disc loss"] = metrics["discriminator loss"]
         data["gen loss"] = metrics["generator loss"]
+        data["notes"] = metrics["notes"]
 
         # file name
         filename = self.path + f"/{self.test_id}_specs.json"

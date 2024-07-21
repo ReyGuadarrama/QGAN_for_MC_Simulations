@@ -7,14 +7,17 @@
     "rotations": [
         "Y"
     ],
-    "lr gen": 0.1,
-    "lr disc": 0.01,
+    "lr gen": 0.005,
+    "lr disc": 0.1,
     "batch size": 1,
-    "samples": 1024,
+    "resolution": "8x8",
+    "optimizer": "SGD",
+    "samples": 512,
     "epochs": 20,
     "y": 0.3,
-    "FID": "3.33e-04",
-    "RMSE": "6.81e-03",
-    "disc loss": "1.72e+00",
-    "gen loss": "4.82e-01"
+    "FID": "1.60e-04",
+    "RMSE": "5.43e-03",
+    "disc loss": "1.58e+00",
+    "gen loss": "7.35e-01",
+    "notes": "it seems a small gen lr is better"
 }
