@@ -51,7 +51,7 @@ probabilities.
 
 <div align="center">
 
-<img src="/home/reyguadarrama/GSoC/images/Quantum_generator-2.png" alt="PQC architecture" width="400" height="200"/>
+<img src="../../images/Quantum_generator-2.png" alt="PQC architecture" width="400" height="200"/>
 
 <div align="justify">
 
