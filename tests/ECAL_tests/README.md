@@ -30,3 +30,8 @@ probabilities.
 | 02 | 7 | 2 | 10 | 2 | ['Y'] | 0.02 | 0.1 | 1 | 8x8 | SGD | 512 | 20 | 0.3 | 1.22e-03 | 1.18e-02 | 1.14e+00 | 8.08e-01 | worse performance with larger gen lr |
 | 03 | 7 | 2 | 10 | 2 | ['Y'] | 0.03 | 0.1 | 1 | 8x8 | SGD | 512 | 20 | 0.3 | 4.16e-04 | 7.67e-03 | 1.48e+00 | 8.86e-01 | worse performance with larger gen lr |
 | 04 | 7 | 2 | 10 | 2 | ['Y'] | 0.04 | 0.1 | 1 | 8x8 | SGD | 512 | 20 | 0.3 | 1.21e-03 | 1.26e-02 | 1.21e+00 | 7.59e-01 | worse performance with larger gen lr |
+| 05 | 7 | 2 | 10 | 2 | ['Y'] | 0.0005 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 1.89e-04 | 6.36e-03 | 1.69e-01 | 2.30e+00 | It seems a very small generator lr is not that good |
+| 06 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 2.88e-04 | 6.32e-03 | 5.82e-01 | 1.54e+00 | this test is better than the 05 |
+| 07 | 7 | 2 | 10 | 2 | ['Y'] | 0.002 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 1.88e-04 | 5.40e-03 | 1.27e+00 | 1.21e+00 | this test has a similar perfomance than 06 |
+| 08 | 7 | 2 | 10 | 2 | ['Y'] | 0.003 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 2.99e-04 | 6.15e-03 | 1.47e+00 | 9.73e-01 | this test seems work better than 05, 06, 07 |
+| 09 | 7 | 2 | 10 | 2 | ['Y'] | 0.004 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 2.96e-04 | 6.27e-03 | 1.40e+00 | 1.14e+00 | this test seems work better than 05, 06, 07 |
