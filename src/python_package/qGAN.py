@@ -53,12 +53,13 @@ def plot_training_progress(epoch, iterations, metric_1, metric_2, generator, rea
 
         fig.colorbar(im, ax=ax3)
 
-    plt.suptitle(f"Epoch {epoch}", fontsize=25)
+    plt.suptitle(f"Epoch {epoch + 1}", fontsize=25)
     plt.show()
 
 
 def model_training(discriminator: Discriminator, generator: QuantumGenerator, probability_distribution: np.array, dist_shape: tuple[int, int],
-                   device: torch.device, criterion: Module, disc_optimizer: Optimizer, gen_optimizer: Optimizer, metrics: list, epochs: int) -> None:
+                   device: torch.device, criterion: Module, disc_optimizer: Optimizer, gen_optimizer: Optimizer, metrics: list, epochs: int,
+                   batch_size: int) -> None:
 
     gen_loss = []
     disc_loss = []
@@ -70,7 +71,7 @@ def model_training(discriminator: Discriminator, generator: QuantumGenerator, pr
     fake_labels = torch.full((1,), 0.0, dtype=torch.float, device=device)
 
     dataset = Dataset(probability_distribution)
-    dataloader = DataLoader(dataset, batch_size=1)
+    dataloader = DataLoader(dataset, batch_size=batch_size)
 
     for epoch in range(epochs):
         for i, data in enumerate(dataloader):
@@ -110,7 +111,7 @@ def model_training(discriminator: Discriminator, generator: QuantumGenerator, pr
             gen_optimizer.step()
 
         # Show loss values
-        if epoch % 20 == 0:
+        if (epoch + 1)% 20 == 0:
             #print(f'Iteration: {counter}, Discriminator Loss: {errD:0.3f}, Generator Loss: {errG:0.3f}, Frenchet Distance: {fd:0.6f}')
             gen_loss.append(errG.detach())
             disc_loss.append(errD.detach())
