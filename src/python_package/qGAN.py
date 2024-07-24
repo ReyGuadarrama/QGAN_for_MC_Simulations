@@ -111,7 +111,7 @@ def model_training(discriminator: Discriminator, generator: QuantumGenerator, pr
             gen_optimizer.step()
 
         # Show loss values
-        if (epoch + 1)% 20 == 0:
+        if (epoch + 1)% 10 == 0:
             #print(f'Iteration: {counter}, Discriminator Loss: {errD:0.3f}, Generator Loss: {errG:0.3f}, Frenchet Distance: {fd:0.6f}')
             gen_loss.append(errG.detach())
             disc_loss.append(errD.detach())
