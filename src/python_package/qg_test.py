@@ -129,11 +129,12 @@ class ModelTest:
 ### **Quantum Circuit Parameters**
 | Parameter            | Value  |
 |----------------------|--------|
-| Number of Qubits     | {self.num_qubits}      |
+| Number of Qubits     | {self.num_qubits}     |
 | Number of Auxiliary Qubits | {self.num_aux_qubits}      |
-| Circuit Depth        | {self.circuit_depth}      |
-| Rotations per layer  | {self.rotations}   |
-| output transf denominator | {self.y}        |
+| Circuit Depth        | {self.circuit_depth}  |
+| Rotations per layer  | {self.rotations}      |
+| output transf denominator | {self.y}         |
+| output shifting      | {self.shift}          |
 
 ### **GAN Parameters**
 | Parameter            | Value  |
