@@ -15,6 +15,8 @@
     "samples": 2048,
     "epochs": 30,
     "y": 0.3,
+    "cut threshold": 0.001,
+    "shift": 0,
     "FID": "4.65e-04",
     "RMSE": "7.58e-03",
     "disc loss": "1.31e+00",

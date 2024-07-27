@@ -9,7 +9,7 @@ class ModelTest:
     def __init__(self, test_id, num_qubits, num_aux_qubits, circuit_depth, 
                  rotations, num_generators, generator_lr, discriminator_lr, 
                  batch_size, num_samples, num_epochs, y, channel, optimizer, 
-                 resolution) -> None:
+                 resolution, cut_threshold, shift) -> None:
         
         self.test_id = test_id
         self.num_qubits = num_qubits
@@ -26,6 +26,8 @@ class ModelTest:
         self.y = y
         self.channel = channel
         self.optimizer = optimizer
+        self.cut_threshold = cut_threshold
+        self.shift = shift
         self.date = date.today()
 
         # Setting the path relative to the current file
@@ -94,7 +96,9 @@ class ModelTest:
             "optimizer": self.optimizer,
             "samples": self.num_samples,
             "epochs": self.num_epochs,
-            "y": self.y      
+            "y": self.y,      
+            "cut threshold": self.cut_threshold,
+            "shift": self.shift
         }
     
     

@@ -1,5 +1,5 @@
 {
-    "id": "09",
+    "id": "23",
     "qubits": 7,
     "auxiliar qubits": 2,
     "circuit depth": 10,
@@ -7,7 +7,7 @@
     "rotations": [
         "Y"
     ],
-    "lr gen": 0.004,
+    "lr gen": 0.001,
     "lr disc": 0.1,
     "batch size": 1,
     "resolution": "8x8",
@@ -15,11 +15,11 @@
     "samples": 512,
     "epochs": 30,
     "y": 0.3,
-    "cut threshold": 0.001,
-    "shift": 0,
-    "FID": "2.96e-04",
-    "RMSE": "6.27e-03",
-    "disc loss": "1.40e+00",
-    "gen loss": "1.14e+00",
-    "notes": "this test seems work better than 05, 06, 07"
+    "cut threshold": 0,
+    "shift": 0.01,
+    "FID": "1.69e-04",
+    "RMSE": "4.83e-03",
+    "disc loss": "1.41e+00",
+    "gen loss": "7.82e-01",
+    "notes": "generates less low energy deposits than real data"
 }
