@@ -28,16 +28,16 @@ def generate_markdown_table(data):
 
     return markdown
 
-def save_to_readme(markdown, introduction, filename="/home/reyguadarrama/GSoC/tests/ECAL_tests/README.md"):
+def save_to_readme(markdown, introduction, filename="/home/reyguadarrama/GSoC/tests/HCAL_tests/README.md"):
     with open(filename, 'w') as file:
         file.write(introduction + "\n\n" + markdown)
 
 # Use the defined functions to read, generate, and save the data
-directory = "/home/reyguadarrama/GSoC/tests/ECAL_tests/log"
+directory = "/home/reyguadarrama/GSoC/tests/HCAL_tests/log"
 introduction_text = """
 <div align="center">
 
-# **Summary of ECAL Channel Test Results**
+# **Summary of HCAL Channel Test Results**
 ---
 
 <div align="justify">

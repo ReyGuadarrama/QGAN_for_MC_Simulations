@@ -21,6 +21,8 @@ probabilities.
 
 
 - The first 5 test show that a smaller generator lr produces a better convergence, range tested: $gen\,\,lr \in [0.005, 0.4]$.
+- Test 19-24 explore the impact of the shift values in the range $[0.0001, 0.05]$. the best performance was found between $0.001-0.005$
+- Test 25-29 aims to find the optimal shift value for the circuit output
 
 
 | id | qubits | auxiliar qubits | circuit depth | generators | rotations | lr gen | lr disc | batch size | resolution | optimizer | samples | epochs | y | cut threshold | shift | FID | RMSE | disc loss | gen loss | notes |
@@ -31,7 +33,7 @@ probabilities.
 | 03 | 7 | 2 | 10 | 2 | ['Y'] | 0.03 | 0.1 | 1 | 8x8 | SGD | 512 | 20 | 0.3 | 0.001 | 0 | 4.16e-04 | 7.67e-03 | 1.48e+00 | 8.86e-01 | worse performance with larger gen lr |
 | 04 | 7 | 2 | 10 | 2 | ['Y'] | 0.04 | 0.1 | 1 | 8x8 | SGD | 512 | 20 | 0.3 | 0.001 | 0 | 1.21e-03 | 1.26e-02 | 1.21e+00 | 7.59e-01 | worse performance with larger gen lr |
 | 05 | 7 | 2 | 10 | 2 | ['Y'] | 0.0005 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0.001 | 0 | 1.89e-04 | 6.36e-03 | 1.69e-01 | 2.30e+00 | It seems a very small generator lr is not that good |
-| 06 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0.001 | 0 | 2.88e-04 | 6.32e-03 | 5.82e-01 | 1.54e+00 | this test is better than the 05 |
+| 06 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0 | 0 | 2.88e-04 | 6.32e-03 | 5.82e-01 | 1.54e+00 | this test is better than the 05 |
 | 07 | 7 | 2 | 10 | 2 | ['Y'] | 0.002 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0.001 | 0 | 1.88e-04 | 5.40e-03 | 1.27e+00 | 1.21e+00 | this test has a similar perfomance than 06 |
 | 08 | 7 | 2 | 10 | 2 | ['Y'] | 0.003 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0.001 | 0 | 2.99e-04 | 6.15e-03 | 1.47e+00 | 9.73e-01 | this test seems work better than 05, 06, 07 |
 | 09 | 7 | 2 | 10 | 2 | ['Y'] | 0.004 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0.001 | 0 | 2.96e-04 | 6.27e-03 | 1.40e+00 | 1.14e+00 | this test seems work better than 05, 06, 07 |
@@ -50,3 +52,14 @@ probabilities.
 | 22 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0 | 0.005 | 7.45e-05 | 3.53e-03 | 1.59e+00 | 9.27e-01 | generates less low energy deposits than real data |
 | 23 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0 | 0.01 | 1.69e-04 | 4.83e-03 | 1.41e+00 | 7.82e-01 | generates less low energy deposits than real data |
 | 24 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 30 | 0.3 | 0 | 0.05 | 2.23e-04 | 6.58e-03 | 7.47e-01 | 1.33e+00 | generates much less low energy deposits than real data |
+| 25 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 40 | 0.3 | 0 | 0.002 | 1.76e-04 | 4.71e-03 | 1.09e+00 | 1.07e+00 | analysis pending |
+| 26 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 40 | 0.3 | 0 | 0.003 | 1.50e-04 | 4.28e-03 | 5.52e-01 | 1.22e+00 | analysis pending |
+| 27 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 1 | 8x8 | SGD | 512 | 40 | 0.3 | 0 | 0.004 | 1.26e-04 | 4.85e-03 | 8.23e-01 | 1.00e+00 | analysis pending |
+| 28 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 8 | 8x8 | SGD | 512 | 50 | 0.3 | 0.001 | 0 | 5.02e-04 | 8.22e-03 | 7.62e-01 | 1.56e+00 | analysis pending |
+| 29 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 16 | 8x8 | SGD | 512 | 50 | 0.3 | 0.001 | 0 | 5.04e-04 | 8.03e-03 | 9.25e-01 | 1.49e+00 | analysis pending |
+| 30 | 7 | 2 | 10 | 2 | ['Y'] | 0.001 | 0.1 | 32 | 8x8 | SGD | 512 | 50 | 0.3 | 0.001 | 0 | 3.86e-04 | 1.29e-02 | 9.58e-01 | 1.63e+00 | analysis pending |
+| 33 | 9 | 3 | 10 | 1 | ['Y'] | 0.005 | 0.005 | 1 | 8x8 | SGD | 1024 | 200 | 0.25 | 0.001 | 0 | 6.17e-03 | 2.74e-02 | 1.63e+00 | 8.60e-01 | analysis pending |
+| 34 | 9 | 3 | 13 | 1 | ['Y'] | 0.001 | 0.001 | 1 | 8x8 | SGD | 1024 | 200 | 0.28 | 0.001 | 0 | 3.23e-04 | 9.12e-03 | 1.16e+00 | 9.35e-01 | analysis pending |
+| 35 | 9 | 3 | 10 | 1 | ['Y'] | 0.001 | 0.001 | 1 | 8x8 | SGD | 1024 | 200 | 0.28 | 0.001 | 0 | 3.82e-04 | 7.92e-03 | 1.52e+00 | 6.10e-01 | analysis pending |
+| 36 | 9 | 3 | 10 | 1 | ['X', 'Y'] | 0.0005 | 0.0005 | 1 | 8x8 | SGD | 1024 | 200 | 0.28 | 0.001 | 0 | 4.68e-04 | 7.59e-03 | 1.25e+00 | 1.07e+00 | analysis pending |
+| 37 | 9 | 3 | 13 | 1 | ['X', 'Y'] | 0.0001 | 0.0001 | 1 | 8x8 | SGD | 1024 | 200 | 0.28 | 0.001 | 0 |

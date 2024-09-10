@@ -1,5 +1,4 @@
 from IPython.display import Markdown, display
-from datetime import date
 import json
 import numpy as np
 import h5py
@@ -28,7 +27,8 @@ class ModelTest:
         self.optimizer = optimizer
         self.cut_threshold = cut_threshold
         self.shift = shift
-        self.date = date.today()
+
+        
 
         # Setting the path relative to the current file
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -116,7 +116,6 @@ class ModelTest:
 
 ## General Information
 - **Test ID**: {self.test_id}
-- **Date**: {self.date}
 
 ### **Training dataset features**
 | Parameter            | Value  |
@@ -135,6 +134,7 @@ class ModelTest:
 | Rotations per layer  | {self.rotations}      |
 | output transf denominator | {self.y}         |
 | output shifting      | {self.shift}          |
+| output clipping      | <{self.cut_threshold} |
 
 ### **GAN Parameters**
 | Parameter            | Value  |

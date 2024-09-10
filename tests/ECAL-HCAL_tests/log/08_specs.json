@@ -1,0 +1,20 @@
+{
+    "id": "08",
+    "qubits": 9,
+    "auxiliar qubits": 4,
+    "circuit depth": 12,
+    "generators": 16,
+    "rotations": [
+        "Y"
+    ],
+    "lr gen": 0.0001,
+    "lr disc": 0.0001,
+    "batch size": 1,
+    "resolution": "16x16",
+    "optimizer": "SGD",
+    "samples": 256,
+    "epochs": 50,
+    "y": 0.28,
+    "cut threshold": 0.001,
+    "shift": 0
+}

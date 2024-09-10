@@ -1,0 +1,25 @@
+{
+    "id": "00",
+    "qubits": 7,
+    "auxiliar qubits": 2,
+    "circuit depth": 10,
+    "generators": 2,
+    "rotations": [
+        "Y"
+    ],
+    "lr gen": 0.005,
+    "lr disc": 0.005,
+    "batch size": 1,
+    "resolution": "8x8",
+    "optimizer": "SGD",
+    "samples": 1024,
+    "epochs": 50,
+    "y": 0.3,
+    "cut threshold": 0.001,
+    "shift": 0,
+    "FID": "1.17e-04",
+    "RMSE": "5.99e-03",
+    "disc loss": "1.30e+00",
+    "gen loss": "7.12e-01",
+    "notes": "analysis pending"
+}
