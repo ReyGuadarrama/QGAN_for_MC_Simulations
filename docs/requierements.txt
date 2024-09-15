@@ -59,7 +59,7 @@ pure-eval==0.2.2
 Pygments==2.18.0
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0
--e git+ssh://git@github.com/ReyGuadarrama/QGAN_for_MC_Simulations.git@83e697ec19f5578791e3f27156cfb72f27d2d03d#egg=python_package
+-e .
 pytz==2024.1
 pyzmq==26.0.3
 requests==2.32.2

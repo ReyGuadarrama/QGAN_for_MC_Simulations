@@ -33,7 +33,7 @@ To download and run this code, the following software is required:
 ### **Installation**
 
 ```
-git clone git@github.com:ReyGuadarrama/QGAN_for_MC_Simulations.git
+git clone https://github.com/ReyGuadarrama/QGAN_for_MC_Simulations.git
 cd QGAN_for_MC_Simulations
 python3 -m venv env
 source env/bin/activate
