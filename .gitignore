@@ -58,6 +58,9 @@ cover/
 # Visual Studio code
 .vscode
 
+# Large data files
+gluon_data_16x16/
+
 # Django stuff:
 *.log
 local_settings.py
